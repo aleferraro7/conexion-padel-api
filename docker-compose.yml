@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  mongodb_container:
+    image: mongo:latest
+    environment:
+      MONGODB_USER: conexion_padel
+      MONGODB_DATABASE: conexion_padel
+      MONGODB_PASS: root
+    ports:
+      - 27018:27017
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+  mongodb_data_container:
