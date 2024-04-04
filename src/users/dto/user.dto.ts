@@ -1,7 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Gender, Position } from '../schemas/user.schema';
 import { Role } from 'src/common/enums/role.enum';
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
 
 export class UserDto {
   @ApiProperty({
@@ -95,7 +95,8 @@ export class UserDto {
     enum: Role,
   })
   @IsEnum(Role)
-  role: Role;
+  @IsOptional()
+  role?: Role;
 }
 
 export class CreateUserDto {
@@ -183,14 +184,15 @@ export class CreateUserDto {
   })
   position: Position;
 
-  @ApiProperty({
-    description: 'User Role',
-    example: 'USER',
-    required: true,
-    enum: Role,
-  })
+  // @ApiProperty({
+  //   description: 'User Role',
+  //   example: 'USER',
+  //   required: true,
+  //   enum: Role,
+  // })
   @IsEnum(Role)
-  role: Role;
+  @IsOptional()
+  role?: Role;
 }
 
 export class UpdateUserDto extends PartialType(UserDto) {}

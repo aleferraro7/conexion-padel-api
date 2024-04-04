@@ -6,9 +6,10 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcryptjs from 'bcryptjs';
 // import { LoginDto } from '../dto/login.dto';
-import { UsersService } from 'src/users/controllers/services/users.service';
+import { UsersService } from 'src/users/services/users.service';
 import { UserDto } from 'src/users/dto/user.dto';
 import { LoginDto } from '../dto/login.dto';
+import { Role } from 'src/common/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,7 @@ export class AuthService {
     await this.usersService.create({
       ...userDto,
       password: await bcryptjs.hash(password, 10),
+      role: Role.USER,
     });
 
     return `Welcome ${userDto.username} to Padel Connection`;
