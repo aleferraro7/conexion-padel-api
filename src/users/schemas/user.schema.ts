@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsEmail, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsNumber, IsString } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
 import { Role } from 'src/common/enums/role.enum';
 
@@ -92,8 +92,8 @@ export class User {
     required: true,
     default: [Role.USER],
   })
-  // @IsArray()
-  role: Role;
+  @IsArray()
+  roles: Role[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

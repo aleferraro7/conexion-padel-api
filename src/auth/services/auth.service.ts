@@ -1,9 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcryptjs from 'bcryptjs';
 import { UsersService } from 'src/users/services/users.service';
 import { CreateUserDto } from 'src/users/dto/user.dto';
-import { Role } from 'src/common/enums/role.enum';
+import { LoginDto } from '../dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,24 +16,25 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register({ password, ...createUserDto }: CreateUserDto) {
-    const user = await this.usersService.findOneByEmail(createUserDto.email);
+  async getAuthenticatedUser(email: string, plainTextPassword: string) {
+    const user = await this.usersService.findByEmail(email);
+    await this.verifyPassword(plainTextPassword, user.password);
+    user.password = undefined;
+    return user;
+  }
 
-    if (user) {
-      throw new BadRequestException('The user already exists');
+  async verifyPassword(plainTextPassword: string, hashedPassword: string) {
+    const isPasswordMatching = await bcryptjs.compare(
+      plainTextPassword,
+      hashedPassword,
+    );
+    if (!isPasswordMatching) {
+      throw new Error('Invalid data');
     }
-
-    await this.usersService.create({
-      ...createUserDto,
-      password: await bcryptjs.hash(password, 10),
-      role: Role.USER,
-    });
-
-    return `Welcome ${createUserDto.username} to Padel Connection`;
   }
 
   // async login({ email, password }: LoginDto) {
-  //   const user = await this.usersService.findOneByEmail(email);
+  //   const user = await this.usersService.findByEmail(email);
 
   //   if (!user) {
   //     throw new UnauthorizedException('User not found');
@@ -41,7 +46,7 @@ export class AuthService {
   //     throw new UnauthorizedException('Invalid Password');
   //   }
 
-  //   const payload = { email: user.email, role: user.role };
+  //   const payload = { email: user.email, role: user.roles };
   //   const token = await this.jwtService.signAsync(payload);
 
   //   return { token };
@@ -58,7 +63,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, role: user.role };
+    const payload = { username: user.username, role: user.roles };
     return {
       access_token: this.jwtService.sign(payload),
     };

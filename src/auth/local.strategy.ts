@@ -1,24 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-local';
 import { AuthService } from './services/auth.service';
-import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private readonly authService: AuthService,
-    private moduleRef: ModuleRef,
-  ) {
-    super({
-      passReqToCallback: true,
-    });
+  constructor(private readonly authService: AuthService) {
+    super();
   }
 
-  async validate(request: Request, email: string, password: string) {
-    const user = await this.authService.validateUser(email, password);
+  async validate(username: string, password: string): Promise<any> {
+    const user = await this.authService.validateUser(username, password);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('User incorrect');
     }
     return user;
   }
