@@ -10,35 +10,39 @@ export class UsersService {
     @InjectModel(User.name) private readonly usersService: Model<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const newUser = new this.usersService(createUserDto);
     return await newUser.save();
   }
 
-  async findUsers() {
+  async findUsers(): Promise<User[]> {
     return await this.usersService.find();
   }
 
-  async findOneById(id: string) {
+  async findOneById(id: string): Promise<User> {
     return await this.usersService.findById(id);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     return await this.usersService.findByIdAndUpdate(id, updateUserDto);
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void> {
     return await this.usersService.findByIdAndDelete(id);
   }
 
-  async findOneByEmail(email: string) {
+  async findOneByEmail(email: string): Promise<User> {
     return await this.usersService.findOne({ email });
   }
 
-  async findByEmailWithPassword(email) {
+  async findByEmailWithPassword(email): Promise<User> {
     return this.usersService.findOne({
       where: { email },
       select: ['id', 'email', 'role', 'name', 'password'],
     });
+  }
+
+  async findOneByUsername(username: string): Promise<User> {
+    return await this.usersService.findOne({ username });
   }
 }

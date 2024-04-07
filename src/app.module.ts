@@ -7,6 +7,8 @@ import { DatabaseModule } from './database.module';
 import { ConfigModule } from '@nestjs/config';
 // import { AdminModule } from './admin/admin.module';
 import configs from './config/index';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -20,9 +22,14 @@ import configs from './config/index';
     DatabaseModule,
     UsersModule,
     AuthModule,
-    // AdminModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
