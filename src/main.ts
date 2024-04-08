@@ -13,8 +13,9 @@ async function bootstrap() {
     .addTag('Conexion-Padel')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000);
+  console.log('http://localhost:3000/docs/');
 }
 bootstrap();
