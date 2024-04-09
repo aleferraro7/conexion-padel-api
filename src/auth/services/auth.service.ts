@@ -52,23 +52,4 @@ export class AuthService {
       throw new Error('Invalid data');
     }
   }
-
-  // async login({ email, password }: LoginDto) {
-  //   const user = await this.usersService.findByEmail(email);
-
-  //   if (!user) {
-  //     throw new UnauthorizedException('User not found');
-  //   }
-
-  //   const isValidPassword = await bcryptjs.compare(password, user.password);
-
-  //   if (!isValidPassword) {
-  //     throw new UnauthorizedException('Invalid Password');
-  //   }
-
-  //   const payload = { email: user.email, role: user.roles };
-  //   const token = await this.jwtService.signAsync(payload);
-
-  //   return { token };
-  // }
 }

@@ -10,7 +10,6 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/users/dto/user.dto';
 import { AuthService } from './services/auth.service';
 import { UsersService } from 'src/users/services/users.service';
-// import { LoginDto } from './dto/login.dto';
 import { Public } from './decorators/public.decorator';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';

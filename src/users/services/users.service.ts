@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schemas/user.schema';
 import { Model } from 'mongoose';
@@ -12,20 +12,25 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<string> {
-    const user = await this.usersService.findOne({
+    const existEmail = await this.usersService.findOne({
       email: createUserDto.email,
     });
-    if (user) {
-      throw new BadRequestException('The user already exists');
+    if (existEmail) {
+      throw new ConflictException('The user already exists');
+    }
+
+    const existUsername = await this.usersService.findOne({
+      username: createUserDto.username,
+    });
+    if (existUsername) {
+      throw new ConflictException('The username is not available');
     }
 
     const hashedPassword = await bcryptjs.hash(createUserDto.password, 10);
-    // const createdUser = await this.usersService.create({
     const createdUser = await this.usersService.create({
       ...createUserDto,
       password: hashedPassword,
     });
-    // createdUser.password = undefined;
 
     return createdUser._id.toString();
   }
@@ -52,13 +57,6 @@ export class UsersService {
       return user;
     }
     throw new Error('User not found');
-  }
-
-  async findByEmailWithPassword(email): Promise<User> {
-    return this.usersService.findOne({
-      where: { email },
-      select: ['id', 'email', 'role', 'name', 'password'],
-    });
   }
 
   async findOneByUsername(username: string): Promise<any> {

@@ -184,12 +184,6 @@ export class CreateUserDto {
   })
   position: Position;
 
-  // @ApiProperty({
-  //   description: 'User Role',
-  //   example: 'USER',
-  //   required: true,
-  //   enum: Role,
-  // })
   @IsEnum(Role)
   @IsOptional()
   role?: Role;
