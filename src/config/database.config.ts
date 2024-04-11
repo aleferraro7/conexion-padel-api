@@ -3,10 +3,10 @@ import { registerAs } from '@nestjs/config';
 export default registerAs(
   'database',
   (): Record<string, any> => ({
-    MONGO_HOST: process.env.MONGO_HOST,
-    MONGO_PORT: parseInt(process.env.MONGO_PORT, 10) || 27017,
-    MONGO_USERNAME: process.env.MONGO_USERNAME,
-    MONGO_PASSWORD: process.env.MONGO_PASSWORD,
-    MONGO_DATABASE: process.env.MONGO_DATABASE,
+    MONGO_HOST: process.env.POSTGRES_HOST,
+    MONGO_PORT: parseInt(process.env.POSTGRES_PORT, 10) || 5432,
+    MONGO_USERNAME: process.env.POSTGRES_USER,
+    MONGO_PASSWORD: process.env.POSTGRES_PASSWORD,
+    MONGO_DATABASE: process.env.POSTGRES_DB,
   }),
 );
