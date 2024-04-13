@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configs from './config/index';
-// import { APP_GUARD } from '@nestjs/core';
-// import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { UserModule } from './users/user.module';
 import { DatabaseModule } from './database.module';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { CourtsModule } from './courts/courts.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,16 +18,22 @@ import { DatabaseModule } from './database.module';
       envFilePath: ['.env'],
       expandVariables: true,
     }),
-    UserModule,
+    UsersModule,
     DatabaseModule,
+    AuthenticationModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: {
+          expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}s`,
+        },
+      }),
+    }),
+    CourtsModule,
   ],
   controllers: [AppController],
-  providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
-    AppService,
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
