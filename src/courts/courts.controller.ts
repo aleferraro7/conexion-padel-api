@@ -12,6 +12,7 @@ import { CourtsService } from './courts.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateCourtDto, UpdateCourtDto } from './dto/court.dto';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
+import { FindOneParams } from 'src/utils/find-one-params';
 
 @ApiTags('COURTS')
 @Controller('courts')
@@ -30,8 +31,8 @@ export class CourtsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this._courtsService.getCourtById(id);
+  findOne(@Param() { id }: FindOneParams) {
+    return this._courtsService.getCourtById(Number(id));
   }
 
   @Patch(':id')
