@@ -1,63 +1,23 @@
+import { Expose } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-// export enum Gender {
-//   MALE = 'MALE',
-//   FEMALE = 'FEMALE',
-//   NON_BINARY = 'NON BINARY',
-//   OTHER = 'OTHER',
-// }
-
-// export enum Position {
-//   DRIVE = 'DRIVE',
-//   REVES = 'REVES',
-//   BOTH = 'BOTH',
-// }
+import * as bcrypt from 'bcrypt';
 
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column()
-  username: string;
-
-  @Column()
+  @Column({ unique: true })
+  @Expose()
   email: string;
-
-  @Column()
-  password: string;
-
-  // @CreateDateColumn({
-  //   name: 'creation_at',
-  //   type: 'timestamptz',
-  //   default: () => 'CURRENT_TIMESTAMP',
-  // })
-  // creationAt: Date;
 
   // @Column()
   // name: string;
 
-  // @Column()
-  // lastname: string;
+  @Column()
+  password: string;
 
-  // @Column()
-  // age: number;
-
-  // @Column()
-  // country: string;
-
-  // @Column()
-  // city: string;
-
-  // @Column()
-  // telephone_number: string;
-
-  // @Column()
-  // level: number;
-
-  // @Column()
-  // gender: Gender;
-
-  // @Column()
-  // position: Position;
+  async validatePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }

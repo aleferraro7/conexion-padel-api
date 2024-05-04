@@ -5,11 +5,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configs from './config/index';
 import { DatabaseModule } from './database.module';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthenticationModule } from './authentication/authentication.module';
 import { CourtsModule } from './courts/courts.module';
 import { UsersModule } from './users/users.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
+import { PlayersModule } from './players/players.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,7 +23,6 @@ import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
     }),
     UsersModule,
     DatabaseModule,
-    AuthenticationModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -34,6 +34,8 @@ import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
       }),
     }),
     CourtsModule,
+    PlayersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

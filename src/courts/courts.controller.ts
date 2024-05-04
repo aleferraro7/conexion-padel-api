@@ -6,12 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
 } from '@nestjs/common';
 import { CourtsService } from './courts.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateCourtDto, UpdateCourtDto } from './dto/court.dto';
-import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
 import { FindOneParams } from 'src/utils/find-one-params';
 
 @ApiTags('COURTS')
@@ -20,7 +18,6 @@ export class CourtsController {
   constructor(private readonly _courtsService: CourtsService) {}
 
   @Post()
-  @UseGuards(JwtAuthenticationGuard)
   create(@Body() createCourtDto: CreateCourtDto) {
     return this._courtsService.createCourt(createCourtDto);
   }

@@ -15,7 +15,7 @@ export class UsersService {
     @InjectRepository(User) private readonly _usersRepository: Repository<User>,
   ) {}
 
-  async getUsers() {
+  async getUsers(): Promise<User[]> {
     return await this._usersRepository.find();
   }
 
@@ -31,7 +31,7 @@ export class UsersService {
   }
 
   async createUser(userData: Partial<User>) {
-    const newUser = await this._usersRepository.create(userData);
+    const newUser = this._usersRepository.create(userData);
     await this._usersRepository.save(newUser);
     return newUser;
   }
