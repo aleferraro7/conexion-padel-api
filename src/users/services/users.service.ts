@@ -63,28 +63,3 @@ export class UsersService {
     );
   }
 }
-
-//   async create(createUserData: Partial<User>): Promise<any> {
-//     const existEmail = await this.usersRepository.findOneBy({
-//       email: createUserData.email,
-//     });
-//     if (existEmail) {
-//       throw new ConflictException('The user already exists');
-//     }
-
-// const existUsername = await this.usersRepository.findOneBy({
-//   username: createUserData.username,
-// });
-// if (existUsername) {
-//   throw new ConflictException('The username is not available');
-// }
-
-// const hashedPassword = await bcryptjs.hash(createUserData.password, 10);
-// const newUser = new User();
-// newUser.email = createUserData.email;
-// newUser.password = hashedPassword;
-// newUser.name = createUserData.name;
-// const createdUser = await this.usersRepository.save(newUser);
-
-// return createdUser;
-//   }
