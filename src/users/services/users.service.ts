@@ -1,65 +1,65 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../schemas/user.schema';
-import { Model } from 'mongoose';
-import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
-import * as bcryptjs from 'bcryptjs';
+import {
+  // ConflictException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../repository/entities/user.entity';
+import { Repository } from 'typeorm';
+// import * as bcryptjs from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private readonly usersService: Model<User>,
+    @InjectRepository(User) private readonly _usersRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<string> {
-    const existEmail = await this.usersService.findOne({
-      email: createUserDto.email,
-    });
-    if (existEmail) {
-      throw new ConflictException('The user already exists');
-    }
-
-    const existUsername = await this.usersService.findOne({
-      username: createUserDto.username,
-    });
-    if (existUsername) {
-      throw new ConflictException('The username is not available');
-    }
-
-    const hashedPassword = await bcryptjs.hash(createUserDto.password, 10);
-    const createdUser = await this.usersService.create({
-      ...createUserDto,
-      password: hashedPassword,
-    });
-
-    return createdUser._id.toString();
+  async getUsers(): Promise<User[]> {
+    return await this._usersRepository.find();
   }
 
-  async findUsers(): Promise<User[]> {
-    return await this.usersService.find();
-  }
-
-  async findOneById(id: string): Promise<User> {
-    return await this.usersService.findById(id);
-  }
-
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    return await this.usersService.findByIdAndUpdate(id, updateUserDto);
-  }
-
-  async remove(id: string): Promise<void> {
-    return await this.usersService.findByIdAndDelete(id);
-  }
-
-  async findByEmail(email: string) {
-    const user = await this.usersService.findOne({ email });
+  async getUserById(id: number) {
+    const user = await this._usersRepository.findBy({ id });
     if (user) {
       return user;
     }
-    throw new Error('User not found');
+    throw new HttpException(
+      'User with this id does not exists',
+      HttpStatus.NOT_FOUND,
+    );
   }
 
-  async findOneByUsername(username: string): Promise<any> {
-    return this.usersService.findOne({ username }).exec();
+  async createUser(userData: Partial<User>) {
+    const newUser = this._usersRepository.create(userData);
+    await this._usersRepository.save(newUser);
+    return newUser;
+  }
+
+  async updateUser(id: number, updateUser: Partial<User>) {
+    await this._usersRepository.update(id, updateUser);
+    const updatedUser = await this.getUserById(id);
+    if (updatedUser) {
+      return updatedUser;
+    }
+    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  }
+
+  async deleteUser(id: number) {
+    const deleteResponse = await this._usersRepository.delete(id);
+    if (!deleteResponse.affected) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async findByEmail(email: string) {
+    const user = await this._usersRepository.findOneBy({ email });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this email does not exists',
+      HttpStatus.NOT_FOUND,
+    );
   }
 }
