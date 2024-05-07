@@ -11,10 +11,9 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from 'src/common/login.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Public } from 'src/common/public.decorator';
 import { RegisterDto } from 'src/common/register.dto';
 import { User } from 'src/users/repository/entities/user.entity';
@@ -29,22 +28,11 @@ export class AuthController {
     return await this.authService.register(registerDto);
   }
 
-  // @Public()
-  // @HttpCode(HttpStatus.OK)
-  // @Post('signIn')
-  // async signIn(@Body() signInDto: LoginDto) {
-  //   return await this.authService.signIn(signInDto.email, signInDto.password);
-  // }
-
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Post('signIn')
-  async signIn(
-    @Body() signInDto: LoginDto,
-    // @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    const { access_token } = await this.authService.signIn(signInDto);
+  @Post('login')
+  async login(@Body() signInDto: LoginDto, @Res() res: Response) {
+    const { access_token } = await this.authService.login(signInDto);
     res
       .cookie('access_token', access_token, {
         httpOnly: true,
@@ -55,19 +43,6 @@ export class AuthController {
       .send({ access_token, status: 'ok' });
   }
 
-  // @ApiBearerAuth()
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  async login(@Req() req) {
-    return this.authService.login(req.user);
-  }
-
-  // @UseGuards(LocalAuthGuard)
-  // @Post('login')
-  // async login(@Request() req) {
-  //   return req.user;
-  // }
-
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('profile')
@@ -75,26 +50,9 @@ export class AuthController {
     return req.user;
   }
 
-  // @UseGuards(LocalAuthGuard)
-  // @Post('auth/login')
-  // async signIn(
-  //   @Req() req: Request,
-  //   @Res({ passthrough: true }) res: Response,
-  // ): Promise<void> {
-  //   const { access_token } = await this.authService.login(req.user);
-  //   res
-  //     .cookie('access_token', access_token, {
-  //       httpOnly: true,
-  //       secure: false,
-  //       sameSite: 'lax',
-  //       expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
-  //     })
-  //     .send({ status: 'ok' });
-  // }
-
   @UseGuards(JwtAuthGuard)
   @Post('log-out')
-  async logOut(@Res() response: Response) {
-    response.setHeader('access_token', this.authService.getCookieForLogOut());
+  async logOut(@Res({ passthrough: true }) res) {
+    return this.authService.logOut(res);
   }
 }
