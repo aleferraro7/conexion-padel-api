@@ -12,7 +12,7 @@ import { Logger } from 'nestjs-pino';
 async function bootstrap() {
   const logger = new ConsoleLogger('bootstrap');
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ skipMissingProperties: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
