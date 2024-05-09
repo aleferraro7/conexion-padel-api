@@ -1,11 +1,9 @@
 // import { Transform } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from 'src/base/base.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'courts' })
-export class Court {
-  @PrimaryGeneratedColumn()
-  id?: number;
-
+export class Court extends BaseEntity {
   @Column()
   number: number;
 

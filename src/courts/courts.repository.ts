@@ -1,13 +1,20 @@
-import { BaseRepository } from 'src/base/base.repository';
+// import { BaseRepository } from 'src/base/base.repository';
 import { Court } from './entities/court.entity';
-import { IRepository } from 'src/base/irepository';
 import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { BaseAbstractRepository } from 'src/base/base.abstract.repository';
+import { CourtsRepositoryInterface } from './courts.repository.interface';
+import { InjectRepository } from '@nestjs/typeorm';
 
+@Injectable()
 export class CourtsRepository
-  extends BaseRepository<Court>
-  implements IRepository<Court>
+  extends BaseAbstractRepository<Court>
+  implements CourtsRepositoryInterface
 {
-  constructor(repository: Repository<Court>) {
-    super(repository);
+  constructor(
+    @InjectRepository(Court)
+    private readonly courtsRepository: Repository<Court>,
+  ) {
+    super(courtsRepository);
   }
 }
