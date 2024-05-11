@@ -1,19 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Court } from './entities/court.entity';
-import { Repository } from 'typeorm';
-import { BaseService } from 'src/base/base.service';
-import { CourtsRepository } from './courts.repository';
 import { CourtsRepositoryInterface } from './courts.repository.interface';
 import { CourtDto } from './dto/court.dto';
-import { CourtsServiceInterface } from './courts.service.interface';
+// import { CourtsServiceInterface } from './courts.service.interface';
+import { BaseService } from 'src/base/base.service';
 
 @Injectable()
-export class CourtsService implements CourtsServiceInterface {
+// export class CourtsService implements CourtsServiceInterface {
+export class CourtsService extends BaseService<Court> {
   constructor(
     @Inject('CourtsRepositoryInterface')
     private readonly courtsRepository: CourtsRepositoryInterface,
-  ) {}
+  ) {
+    super(courtsRepository);
+  }
 
   async create(courtDto: CourtDto): Promise<Court> {
     const court = new Court();
@@ -25,9 +25,9 @@ export class CourtsService implements CourtsServiceInterface {
     return await this.courtsRepository.findAll();
   }
 
-  // async findOneById(id: number): Promise<Court> {
-  //   return await this.courtsRepository.findOneById(id);
-  // }
+  public async findOneById(id: number): Promise<Court> {
+    return await this.courtsRepository.findOneById(id);
+  }
 
   async deleteById(id: number): Promise<void> {
     await this.courtsRepository.deleteById(id);

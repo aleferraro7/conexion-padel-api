@@ -19,6 +19,7 @@ import { CourtsService } from './courts.service';
       provide: 'CourtsServiceInterface',
       useClass: CourtsService,
     },
+    CourtsService,
   ],
 })
 export class CourtsModule {}

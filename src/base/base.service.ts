@@ -1,19 +1,19 @@
 // import { FindOneOptions } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { IRepository } from './irepository';
+import { BaseInterfaceRepository } from './base.interface.repository';
 
 export abstract class BaseService<T extends BaseEntity> {
-  constructor(private readonly repository: IRepository<T>) {}
+  constructor(private readonly repository: BaseInterfaceRepository<T>) {}
 
   async findAll(): Promise<T[]> {
     return await this.repository.findAll();
   }
 
-  async findById(id: number): Promise<T> {
-    return await this.repository.findById(id);
+  async findOneById(id: number): Promise<T> {
+    return await this.repository.findOneById(id);
   }
 
-  async create(data: Partial<T>): Promise<T> {
+  async create(data: T): Promise<T> {
     return await this.repository.create(data);
   }
 
@@ -29,7 +29,7 @@ export abstract class BaseService<T extends BaseEntity> {
     return await this.repository.deleteById(id);
   }
 
-  // async softDeleteById(id: number): Promise<void> {
-  //   return await this.repository.softDeleteById(id);
-  // }
+  async softDeleteById(id: number): Promise<void> {
+    return await this.repository.softDeleteById(id);
+  }
 }
