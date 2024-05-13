@@ -1,35 +1,43 @@
-// import { FindOneOptions } from 'typeorm';
+import { BaseAbstractRepository } from './base.abstract.repository';
 import { BaseEntity } from './base.entity';
-import { BaseInterfaceRepository } from './base.interface.repository';
+import { FindOptions } from './base.interface.repository';
 
 export abstract class BaseService<T extends BaseEntity> {
-  constructor(private readonly repository: BaseInterfaceRepository<T>) {}
+  constructor(private readonly baseRepository: BaseAbstractRepository<T>) {}
 
-  async findAll(): Promise<T[]> {
-    return await this.repository.findAll();
+  public async create(data: T): Promise<T> {
+    return await this.baseRepository.save(data);
   }
 
-  async findOneById(id: number): Promise<T> {
-    return await this.repository.findOneById(id);
+  public async save(data: T): Promise<T> {
+    return await this.baseRepository.save(data);
   }
 
-  async create(data: T): Promise<T> {
-    return await this.repository.create(data);
+  public async findOneById(id: number): Promise<T> {
+    return await this.baseRepository.findOneById(id);
   }
 
-  // async findOne(options: FindOneOptions): Promise<T> {
-  //   return await this.repository.findOne(options);
-  // }
-
-  // async save(data: Partial<T>): Promise<T> {
-  //   return await this.repository.save(data);
-  // }
-
-  async deleteById(id: number): Promise<void> {
-    return await this.repository.deleteById(id);
+  public async findOne(options: FindOptions<T>): Promise<T> {
+    return await this.findOne(options);
   }
 
-  async softDeleteById(id: number): Promise<void> {
-    return await this.repository.softDeleteById(id);
+  public async findAll(): Promise<T[]> {
+    return await this.baseRepository.findAll();
+  }
+
+  public async deleteById(id: number): Promise<void> {
+    await this.baseRepository.deleteById(id);
+  }
+
+  public async softDeleteById(id: number): Promise<void> {
+    await this.baseRepository.softDeleteById(id);
+  }
+
+  public async update(id: number, data: Partial<T>): Promise<T> {
+    const obj = await this.findOneById(id);
+    return this.baseRepository.save({
+      ...obj,
+      ...data,
+    });
   }
 }

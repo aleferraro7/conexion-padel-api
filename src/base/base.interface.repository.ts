@@ -5,6 +5,8 @@ export interface BaseInterfaceRepository<T> {
 
   save(data: T): Promise<T>;
 
+  update(id: any, data: Partial<T>): Promise<T>;
+
   findOneById(id: any): Promise<T>;
 
   findAll(): Promise<T[]>;
@@ -15,3 +17,5 @@ export interface BaseInterfaceRepository<T> {
 
   findOne(options: FindOneOptions<T>): Promise<T>;
 }
+
+export type FindOptions<T> = Pick<FindOneOptions<T>, 'where'>;

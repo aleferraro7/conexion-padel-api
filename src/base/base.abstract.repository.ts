@@ -1,42 +1,39 @@
-import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
-import { BaseInterfaceRepository } from './base.interface.repository';
+import {
+  DeepPartial,
+  FindOneOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
+import { BaseEntity } from './base.entity';
+import { FindOptions } from './base.interface.repository';
 
-interface HasId {
-  id: number;
-}
-export abstract class BaseAbstractRepository<T extends HasId>
-  implements BaseInterfaceRepository<T>
-{
-  private repository: Repository<T>;
-  protected constructor(repository: Repository<T>) {
+export abstract class BaseAbstractRepository<T extends BaseEntity> {
+  private readonly repository: Repository<T>;
+  constructor(repository: Repository<T>) {
     this.repository = repository;
   }
 
-  public async create(data: T): Promise<T> {
-    return await this.repository.save(data);
+  public async create(data: DeepPartial<T>): Promise<T> {
+    return await this.repository.create(data);
   }
 
   public async save(data: T): Promise<T> {
     return await this.repository.save(data);
   }
 
-  // public async findOneById(id: number): Promise<T> {
-  //   return await this.repository.findOneBy({ id });
-  // }
-
-  public async findOneById(id: any): Promise<T> {
-    const options: FindOptionsWhere<T> = {
-      id: id,
-    };
-    return await this.repository.findOneBy(options);
+  public async findOneById(id: number): Promise<T> {
+    return await this.repository.findOne({
+      where: { id } as FindOptionsWhere<T>,
+    });
   }
 
-  // async findById(id: number): Promise<T> {
-  //   return this.repository.findOne(id);
-  // }
-
-  public async findOne(options: FindOneOptions<T>): Promise<T> {
-    return await this.findOne(options);
+  public async findOne(options: FindOptions<T>): Promise<T> {
+    const queryOption: FindOneOptions<T> = {
+      where: {
+        ...options.where,
+      },
+    } as FindOneOptions;
+    return await this.repository.findOne(queryOption);
   }
 
   public async findAll(): Promise<T[]> {
@@ -49,5 +46,13 @@ export abstract class BaseAbstractRepository<T extends HasId>
 
   public async softDeleteById(id: number): Promise<void> {
     await this.repository.softDelete(id);
+  }
+
+  public async update(id: number, data: DeepPartial<T>): Promise<T> {
+    const obj = await this.findOneById(id);
+    return this.repository.save({
+      ...obj,
+      ...data,
+    });
   }
 }
