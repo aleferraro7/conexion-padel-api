@@ -2,7 +2,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  Logger,
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -12,25 +11,26 @@ import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
 import { PostgresErrorCode } from 'src/config/postgresErrorCodes.enum';
 import { LoginDto } from 'src/common/login.dto';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(AuthService.name);
+  }
 
   async register(registerDto: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    this.logger.log('Hashing password');
     try {
       const createdUser = await this.usersService.createUser({
         ...registerDto,
         password: hashedPassword,
       });
       createdUser.password = undefined;
-      this.logger.log(`user ${registerDto.email} was created `);
       return createdUser;
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
@@ -50,12 +50,10 @@ export class AuthService {
     email,
     password,
   }: LoginDto): Promise<{ access_token: string }> {
-    this.logger.log(`finding user ${email}`);
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid email');
     }
-    this.logger.log(`Comparing ${email} password`);
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
@@ -63,7 +61,6 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email };
-    this.logger.log(`Creating payload`);
 
     return {
       access_token: await this.jwtService.signAsync(payload),
@@ -71,7 +68,6 @@ export class AuthService {
   }
 
   async logOut(@Res({ passthrough: true }) res) {
-    this.logger.log(`Deleting cookie`);
     res.cookie('access_token', '', { expires: new Date(Date.now()) });
     return {};
   }

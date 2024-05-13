@@ -4,7 +4,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Logger,
   Post,
   Req,
   Res,
@@ -18,16 +17,20 @@ import { Response } from 'express';
 import { Public } from 'src/common/public.decorator';
 import { RegisterDto } from 'src/common/register.dto';
 import { User } from 'src/users/repository/entities/user.entity';
+import { PinoLogger } from 'nestjs-pino';
 
 @Controller('auth')
 export class AuthController {
-  private readonly logger = new Logger(AuthController.name);
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(AuthController.name);
+  }
 
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto): Promise<User> {
-    this.logger.log(`Creating user ${registerDto.email}`);
     return await this.authService.register(registerDto);
   }
 
@@ -35,7 +38,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() signInDto: LoginDto, @Res() res: Response) {
-    this.logger.log(`User ${signInDto.email} is logging`);
     const { access_token } = await this.authService.login(signInDto);
     res
       .cookie('access_token', access_token, {
@@ -51,14 +53,12 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Req() req) {
-    this.logger.log(`User ${req.user.email} is watching their profile`);
     return req.user;
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('log-out')
   async logOut(@Res({ passthrough: true }) res) {
-    this.logger.log(`Cookie will be deleted`);
     return this.authService.logOut(res);
   }
 }

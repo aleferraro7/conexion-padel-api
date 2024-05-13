@@ -23,10 +23,15 @@ import { Request } from 'express';
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
-          target: 'pino-pretty',
-          options: {
-            messageKey: 'message',
-          },
+          targets: [
+            {
+              target: 'pino-pretty',
+              options: {
+                messageKey: 'message',
+              },
+            },
+            // NEXT UPDATE WITH PINO-SENTRY
+          ],
         },
         messageKey: 'message',
         customProps: (req: Request) => {
