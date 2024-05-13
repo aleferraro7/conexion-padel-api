@@ -11,17 +11,20 @@ import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
 import { PostgresErrorCode } from 'src/config/postgresErrorCodes.enum';
 import { LoginDto } from 'src/common/login.dto';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(AuthService.name);
+  }
 
   async register(registerDto: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-
     try {
       const createdUser = await this.usersService.createUser({
         ...registerDto,
@@ -51,7 +54,6 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid email');
     }
-
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {

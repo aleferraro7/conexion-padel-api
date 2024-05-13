@@ -10,11 +10,17 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
+import { PinoLogger } from 'nestjs-pino';
 
 @ApiTags('USERS')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly _usersService: UsersService) {}
+  constructor(
+    private readonly _usersService: UsersService,
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(UsersController.name);
+  }
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {

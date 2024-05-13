@@ -1,19 +1,18 @@
-import {
-  // ConflictException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../repository/entities/user.entity';
 import { Repository } from 'typeorm';
+import { PinoLogger } from 'nestjs-pino';
 // import * as bcryptjs from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly _usersRepository: Repository<User>,
-  ) {}
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(UsersService.name);
+  }
 
   async getUsers(): Promise<User[]> {
     return await this._usersRepository.find();
@@ -21,6 +20,7 @@ export class UsersService {
 
   async getUserById(id: number) {
     const user = await this._usersRepository.findBy({ id });
+
     if (user) {
       return user;
     }

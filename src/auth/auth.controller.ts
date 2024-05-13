@@ -17,10 +17,16 @@ import { Response } from 'express';
 import { Public } from 'src/common/public.decorator';
 import { RegisterDto } from 'src/common/register.dto';
 import { User } from 'src/users/repository/entities/user.entity';
+import { PinoLogger } from 'nestjs-pino';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(AuthController.name);
+  }
 
   @Public()
   @Post('register')

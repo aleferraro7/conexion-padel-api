@@ -3,12 +3,29 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+import { pino } from 'pino';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger = pino({
+    transport: {
+      targets: [
+        {
+          target: 'pino-pretty',
+          options: {
+            messageKey: 'message',
+          },
+        },
+      ],
+    },
+  });
+
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ skipMissingProperties: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
+  app.useLogger(app.get(Logger));
 
   const config = new DocumentBuilder()
     .addBearerAuth()
@@ -22,6 +39,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000);
-  console.log('http://localhost:3000/docs/');
+  logger.info('The server is running in: http://localhost:3000/docs/');
 }
 bootstrap();
