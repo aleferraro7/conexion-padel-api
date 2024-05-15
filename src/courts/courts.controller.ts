@@ -3,42 +3,42 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Patch,
 } from '@nestjs/common';
-import { CourtsService } from './courts.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateCourtDto, UpdateCourtDto } from './dto/court.dto';
-import { FindOneParams } from 'src/utils/find-one-params';
+import { CourtsService } from './courts.service';
+import { Court } from './entities/court.entity';
 
 @ApiTags('COURTS')
 @Controller('courts')
 export class CourtsController {
-  constructor(private readonly _courtsService: CourtsService) {}
+  constructor(private readonly courtsService: CourtsService) {}
 
   @Post()
-  create(@Body() createCourtDto: CreateCourtDto) {
-    return this._courtsService.createCourt(createCourtDto);
+  create(@Body() createCourtDto: CreateCourtDto): Promise<Court> {
+    return this.courtsService.create(createCourtDto);
   }
 
   @Get()
   findAll() {
-    return this._courtsService.getCourts();
+    return this.courtsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param() { id }: FindOneParams) {
-    return this._courtsService.getCourtById(Number(id));
+  findOneById(@Param('id') id: number) {
+    return this.courtsService.findOneById(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateCourtDto: UpdateCourtDto) {
-    return this._courtsService.updateCourt(id, updateCourtDto);
+    return this.courtsService.update(id, updateCourtDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this._courtsService.deleteCourt(id);
+  softDeleteById(@Param('id') id: number) {
+    return this.courtsService.softDeleteById(id);
   }
 }
