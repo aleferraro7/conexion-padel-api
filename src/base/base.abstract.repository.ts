@@ -6,6 +6,9 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { FindOptions } from './base.interface.repository';
+import { PageOptionsDto } from 'src/common/dtos/page-options.dto';
+import { PageDto } from 'src/common/dtos/page.dto';
+import { PageMetaDto } from 'src/common/dtos/page-meta.dto';
 
 export abstract class BaseAbstractRepository<T extends BaseEntity> {
   private readonly repository: Repository<T>;
@@ -36,8 +39,24 @@ export abstract class BaseAbstractRepository<T extends BaseEntity> {
     return await this.repository.findOne(queryOption);
   }
 
-  public async findAll(): Promise<T[]> {
-    return await this.repository.find();
+  // public async findAll(): Promise<T[]> {
+  //   return await this.repository.find();
+  // }
+
+  public async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<T>> {
+    const queryBuilder = this.repository.createQueryBuilder('entity');
+
+    queryBuilder
+      .orderBy('entity.createdAt', pageOptionsDto.order)
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
   }
 
   public async deleteById(id: number): Promise<void> {

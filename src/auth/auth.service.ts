@@ -6,12 +6,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { RegisterDto } from 'src/common/register.dto';
 import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
 import { PostgresErrorCode } from 'src/config/postgresErrorCodes.enum';
-import { LoginDto } from 'src/common/login.dto';
 import { PinoLogger } from 'nestjs-pino';
+import { RegisterDto } from 'src/common/dtos/register.dto';
+import { LoginDto } from 'src/common/dtos/login.dto';
 
 @Injectable()
 export class AuthService {

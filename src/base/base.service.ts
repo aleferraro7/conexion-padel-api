@@ -1,6 +1,8 @@
+import { PageOptionsDto } from 'src/common/dtos/page-options.dto';
 import { BaseAbstractRepository } from './base.abstract.repository';
 import { BaseEntity } from './base.entity';
 import { FindOptions } from './base.interface.repository';
+import { PageDto } from 'src/common/dtos/page.dto';
 
 export abstract class BaseService<T extends BaseEntity> {
   constructor(private readonly baseRepository: BaseAbstractRepository<T>) {}
@@ -21,8 +23,12 @@ export abstract class BaseService<T extends BaseEntity> {
     return await this.findOne(options);
   }
 
-  public async findAll(): Promise<T[]> {
-    return await this.baseRepository.findAll();
+  // public async findAll(): Promise<T[]> {
+  //   return await this.baseRepository.findAll();
+  // }
+
+  public async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<T>> {
+    return await this.baseRepository.findAll(pageOptionsDto);
   }
 
   public async deleteById(id: number): Promise<void> {
