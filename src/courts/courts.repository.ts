@@ -1,4 +1,4 @@
-import { Court } from './entities/court.entity';
+import { Court, COURT_PAGINATE_CONFIG } from './entities/court.entity';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { BaseAbstractRepository } from 'src/base/base.abstract.repository';
@@ -10,6 +10,6 @@ export class CourtsRepository extends BaseAbstractRepository<Court> {
     @InjectRepository(Court)
     private readonly courtsRepository: Repository<Court>,
   ) {
-    super(courtsRepository);
+    super(courtsRepository, COURT_PAGINATE_CONFIG);
   }
 }
