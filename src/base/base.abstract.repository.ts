@@ -4,13 +4,20 @@ import {
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-import { BaseEntity } from './base.entity';
 import { FindOptions } from './base.interface.repository';
+import {
+  PaginateQuery,
+  Paginated,
+  paginate,
+  PaginateConfig,
+} from 'nestjs-paginate';
 
-export abstract class BaseAbstractRepository<T extends BaseEntity> {
+export abstract class BaseAbstractRepository<T> {
   private readonly repository: Repository<T>;
-  constructor(repository: Repository<T>) {
+  private readonly paginatedConfig: PaginateConfig<T>;
+  constructor(repository: Repository<T>, paginated_config: PaginateConfig<T>) {
     this.repository = repository;
+    this.paginatedConfig = paginated_config;
   }
 
   public async create(data: DeepPartial<T>): Promise<T> {
@@ -23,7 +30,7 @@ export abstract class BaseAbstractRepository<T extends BaseEntity> {
 
   public async findOneById(id: number): Promise<T> {
     return await this.repository.findOne({
-      where: { id } as FindOptionsWhere<T>,
+      where: { id } as unknown as FindOptionsWhere<T>,
     });
   }
 
@@ -36,8 +43,12 @@ export abstract class BaseAbstractRepository<T extends BaseEntity> {
     return await this.repository.findOne(queryOption);
   }
 
-  public async findAll(): Promise<T[]> {
-    return await this.repository.find();
+  // public async findAll(): Promise<T[]> {
+  //   return await this.repository.find();
+  // }
+
+  public async findAll(query: PaginateQuery): Promise<Paginated<T>> {
+    return paginate(query, this.repository, this.paginatedConfig);
   }
 
   public async deleteById(id: number): Promise<void> {

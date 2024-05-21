@@ -10,7 +10,14 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateCourtDto, UpdateCourtDto } from './dto/court.dto';
 import { CourtsService } from './courts.service';
-import { Court } from './entities/court.entity';
+import { COURT_PAGINATE_CONFIG, Court } from './entities/court.entity';
+import {
+  ApiOkPaginatedResponse,
+  ApiPaginationQuery,
+  Paginate,
+  PaginateQuery,
+  Paginated,
+} from 'nestjs-paginate';
 
 @ApiTags('COURTS')
 @Controller('courts')
@@ -22,9 +29,16 @@ export class CourtsController {
     return this.courtsService.create(createCourtDto);
   }
 
+  // @Get()
+  // findAll(): Promise<Court[]> {
+  //   return this.courtsService.findAll();
+  // }
+
   @Get()
-  findAll() {
-    return this.courtsService.findAll();
+  @ApiOkPaginatedResponse(Court, COURT_PAGINATE_CONFIG)
+  @ApiPaginationQuery(COURT_PAGINATE_CONFIG)
+  findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Court>> {
+    return this.courtsService.findAll(query);
   }
 
   @Get(':id')

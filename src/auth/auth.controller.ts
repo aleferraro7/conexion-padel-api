@@ -10,14 +10,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from 'src/common/login.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Response } from 'express';
 import { Public } from 'src/common/public.decorator';
-import { RegisterDto } from 'src/common/register.dto';
 import { User } from 'src/users/repository/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
+import { RegisterDto } from 'src/common/dtos/register.dto';
+import { LoginDto } from 'src/common/dtos/login.dto';
 
 @Controller('auth')
 export class AuthController {

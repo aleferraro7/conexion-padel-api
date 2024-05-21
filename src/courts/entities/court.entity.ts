@@ -1,4 +1,5 @@
 // import { Transform } from 'class-transformer';
+import { PaginateConfig } from 'nestjs-paginate';
 import { BaseEntity } from 'src/base/base.entity';
 import { Column, Entity } from 'typeorm';
 
@@ -15,3 +16,10 @@ export class Court extends BaseEntity {
   // })
   price?: number;
 }
+
+export const COURT_PAGINATE_CONFIG: PaginateConfig<Court> = {
+  sortableColumns: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
+  nullSort: 'last',
+  defaultSortBy: [['id', 'DESC']],
+  searchableColumns: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
+};

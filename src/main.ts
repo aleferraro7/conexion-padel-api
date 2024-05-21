@@ -22,7 +22,12 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe({ skipMissingProperties: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      skipMissingProperties: true,
+      transform: true,
+    }),
+  );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
   app.useLogger(app.get(Logger));
@@ -39,6 +44,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000);
-  logger.info('The server is running in: http://localhost:3000/docs/');
+  logger.info('The server is running in: http://localhost:3000/');
+  logger.info('Swagger is running in: http://localhost:3000/docs/');
 }
 bootstrap();

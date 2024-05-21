@@ -1,3 +1,4 @@
+import { PaginateQuery, Paginated } from 'nestjs-paginate';
 import { BaseAbstractRepository } from './base.abstract.repository';
 import { BaseEntity } from './base.entity';
 import { FindOptions } from './base.interface.repository';
@@ -21,8 +22,12 @@ export abstract class BaseService<T extends BaseEntity> {
     return await this.findOne(options);
   }
 
-  public async findAll(): Promise<T[]> {
-    return await this.baseRepository.findAll();
+  // public async findAll(): Promise<T[]> {
+  //   return await this.baseRepository.findAll();
+  // }
+
+  public async findAll(query: PaginateQuery): Promise<Paginated<T>> {
+    return await this.baseRepository.findAll(query);
   }
 
   public async deleteById(id: number): Promise<void> {
