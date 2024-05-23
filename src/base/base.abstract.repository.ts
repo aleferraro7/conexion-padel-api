@@ -43,10 +43,6 @@ export abstract class BaseAbstractRepository<T> {
     return await this.repository.findOne(queryOption);
   }
 
-  // public async findAll(): Promise<T[]> {
-  //   return await this.repository.find();
-  // }
-
   public async findAll(query: PaginateQuery): Promise<Paginated<T>> {
     return paginate(query, this.repository, this.paginatedConfig);
   }

@@ -29,11 +29,6 @@ export class CourtsController {
     return this.courtsService.create(createCourtDto);
   }
 
-  // @Get()
-  // findAll(): Promise<Court[]> {
-  //   return this.courtsService.findAll();
-  // }
-
   @Get()
   @ApiOkPaginatedResponse(Court, COURT_PAGINATE_CONFIG)
   @ApiPaginationQuery(COURT_PAGINATE_CONFIG)

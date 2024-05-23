@@ -1,16 +1,8 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Res,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, Res, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
-import { PostgresErrorCode } from 'src/config/postgresErrorCodes.enum';
 import { PinoLogger } from 'nestjs-pino';
-import { RegisterDto } from 'src/common/dtos/register.dto';
 import { LoginDto } from 'src/common/dtos/login.dto';
 
 @Injectable()
@@ -21,29 +13,6 @@ export class AuthService {
     private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(AuthService.name);
-  }
-
-  async register(registerDto: RegisterDto) {
-    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    try {
-      const createdUser = await this.usersService.createUser({
-        ...registerDto,
-        password: hashedPassword,
-      });
-      createdUser.password = undefined;
-      return createdUser;
-    } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
   }
 
   async login({

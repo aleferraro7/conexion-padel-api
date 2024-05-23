@@ -1,59 +1,29 @@
+import * as bcrypt from 'bcrypt';
+
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/base/base.service';
 import { User } from '../repository/entities/user.entity';
-import { Repository } from 'typeorm';
+import { UsersRepository } from '../repository/entities/users.repository';
 import { PinoLogger } from 'nestjs-pino';
-// import * as bcryptjs from 'bcryptjs';
+import { PostgresErrorCode } from 'src/config/postgresErrorCodes.enum';
+import { RegisterDto } from 'src/common/dtos/register.dto';
 
 @Injectable()
-export class UsersService {
+export class UsersService extends BaseService<User> {
   constructor(
-    @InjectRepository(User) private readonly _usersRepository: Repository<User>,
+    private readonly usersRepository: UsersRepository,
     private readonly logger: PinoLogger,
   ) {
+    super(usersRepository);
     this.logger.setContext(UsersService.name);
   }
 
-  async getUsers(): Promise<User[]> {
-    return await this._usersRepository.find();
-  }
-
-  async getUserById(id: number) {
-    const user = await this._usersRepository.findBy({ id });
-
-    if (user) {
-      return user;
-    }
-    throw new HttpException(
-      'User with this id does not exists',
-      HttpStatus.NOT_FOUND,
-    );
-  }
-
-  async createUser(userData: Partial<User>) {
-    const newUser = this._usersRepository.create(userData);
-    await this._usersRepository.save(newUser);
-    return newUser;
-  }
-
-  async updateUser(id: number, updateUser: Partial<User>) {
-    await this._usersRepository.update(id, updateUser);
-    const updatedUser = await this.getUserById(id);
-    if (updatedUser) {
-      return updatedUser;
-    }
-    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-  }
-
-  async deleteUser(id: number) {
-    const deleteResponse = await this._usersRepository.delete(id);
-    if (!deleteResponse.affected) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-  }
-
   async findByEmail(email: string) {
-    const user = await this._usersRepository.findOneBy({ email });
+    const user = await this.usersRepository.findOne({
+      where: {
+        email,
+      },
+    });
     if (user) {
       return user;
     }
@@ -61,5 +31,28 @@ export class UsersService {
       'User with this email does not exists',
       HttpStatus.NOT_FOUND,
     );
+  }
+
+  async register(registerData: RegisterDto): Promise<User> {
+    const hashedPassword = await bcrypt.hash(registerData.password, 10);
+    try {
+      const createdUser = await this.usersRepository.save({
+        ...registerData,
+        password: hashedPassword,
+      });
+      createdUser.password = undefined;
+      return createdUser;
+    } catch (error) {
+      if (error?.code === PostgresErrorCode.UniqueViolation) {
+        throw new HttpException(
+          'User with that email already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw new HttpException(
+        'Something went wrong',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
