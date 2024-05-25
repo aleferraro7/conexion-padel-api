@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { BaseService } from 'src/base/base.service';
 import { User } from '../repository/entities/user.entity';
-import { UsersRepository } from '../repository/entities/users.repository';
+import { UsersRepository } from '../repository/users.repository';
 import { PinoLogger } from 'nestjs-pino';
 import { PostgresErrorCode } from 'src/config/postgresErrorCodes.enum';
 import { RegisterDto } from 'src/common/dtos/register.dto';

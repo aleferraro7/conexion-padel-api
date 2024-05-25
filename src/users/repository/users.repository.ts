@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseAbstractRepository } from 'src/base/base.abstract.repository';
-import { USER_PAGINATE_CONFIG, User } from './user.entity';
+import { USER_PAGINATE_CONFIG, User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
