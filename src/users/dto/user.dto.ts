@@ -2,14 +2,14 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class UserDto {
-  @ApiProperty({
-    description: 'User nickname',
-    example: 'johndoe23',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  username: string;
+  // @ApiProperty({
+  //   description: 'User nickname',
+  //   example: 'johndoe23',
+  //   required: true,
+  // })
+  // @IsString()
+  // @IsNotEmpty()
+  // username: string;
 
   @ApiProperty({
     description: 'User mail',
@@ -31,14 +31,14 @@ export class UserDto {
 }
 
 export class CreateUserDto {
-  @ApiProperty({
-    description: 'User nickname',
-    example: 'johndoe23',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  username: string;
+  // @ApiProperty({
+  //   description: 'User nickname',
+  //   example: 'johndoe23',
+  //   required: true,
+  // })
+  // @IsString()
+  // @IsNotEmpty()
+  // username: string;
 
   @ApiProperty({
     description: 'User mail',
