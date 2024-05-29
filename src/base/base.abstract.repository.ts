@@ -20,8 +20,13 @@ export abstract class BaseAbstractRepository<T> {
     this.paginatedConfig = paginated_config;
   }
 
+  // public async create(data: DeepPartial<T>): Promise<T> {
+  //   return await this.repository.create(data);
+  // }
+
   public async create(data: DeepPartial<T>): Promise<T> {
-    return await this.repository.create(data);
+    const entity = await this.repository.create(data);
+    return this.repository.save(entity);
   }
 
   public async save(data: T): Promise<T> {
