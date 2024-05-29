@@ -47,7 +47,7 @@ export class CourtsController {
   }
 
   @Delete(':id')
-  softDeleteById(@Param('id') id: number) {
-    return this.courtsService.softDeleteById(id);
+  async deleteById(@Param('id') id: number) {
+    return this.courtsService.deleteById(id);
   }
 }
