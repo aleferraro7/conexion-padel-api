@@ -1,10 +1,8 @@
 import { PaginateQuery, Paginated } from 'nestjs-paginate';
 import { BaseAbstractRepository } from './base.abstract.repository';
-// import { BaseEntity } from './base.entity';
 import { FindOptions } from './base.interface.repository';
 import { DeepPartial } from 'typeorm';
 
-// export abstract class BaseService<T extends BaseEntity> {
 export abstract class BaseService<T> {
   constructor(private readonly baseRepository: BaseAbstractRepository<T>) {}
 

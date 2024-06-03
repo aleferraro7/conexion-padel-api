@@ -65,7 +65,6 @@ const mockPaginatedResponse: Paginated<Court> = {
 };
 
 describe('CourtsRepository', () => {
-  // let baseRepository: BaseAbstractRepository<Court>;
   let repository: CourtsRepository;
   const mockCourtsRepository = {
     create: mockCreate,
