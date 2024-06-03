@@ -10,7 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../services/users.service';
 import { UpdateUserDto } from '../dto/user.dto';
-import { PinoLogger } from 'nestjs-pino';
+// import { PinoLogger } from 'nestjs-pino';
 import { USER_PAGINATE_CONFIG, User } from '../repository/entities/user.entity';
 import {
   ApiOkPaginatedResponse,
@@ -24,20 +24,21 @@ import {
 export class UsersController {
   constructor(
     private readonly _usersService: UsersService,
-    private readonly logger: PinoLogger,
+    // private readonly logger: PinoLogger,
   ) {
-    this.logger.setContext(UsersController.name);
+    // this.logger.setContext(UsersController.name);
   }
 
   @Get()
   @ApiOkPaginatedResponse(User, USER_PAGINATE_CONFIG)
   @ApiPaginationQuery(USER_PAGINATE_CONFIG)
   async findAll(@Paginate() query: PaginateQuery) {
+    // this.logger.info('Finding all users');
     return await this._usersService.findAll(query);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOneById(@Param('id') id: number) {
     return await this._usersService.findOneById(id);
   }
 
