@@ -21,7 +21,7 @@ export abstract class BaseService<T> {
   }
 
   public async findOne(options: FindOptions<T>): Promise<T> {
-    return await this.findOne(options);
+    return await this.baseRepository.findOne(options);
   }
 
   public async findAll(query: PaginateQuery): Promise<Paginated<T>> {
