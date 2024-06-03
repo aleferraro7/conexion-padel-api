@@ -29,11 +29,6 @@ export class UsersController {
     this.logger.setContext(UsersController.name);
   }
 
-  // @Post()
-  // async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-  //   return await this._usersService.create(createUserDto);
-  // }
-
   @Get()
   @ApiOkPaginatedResponse(User, USER_PAGINATE_CONFIG)
   @ApiPaginationQuery(USER_PAGINATE_CONFIG)
@@ -52,7 +47,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async delete(@Param('id') id: number) {
     return await this._usersService.deleteById(id);
   }
 }

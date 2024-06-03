@@ -1,13 +1,13 @@
 import { PaginateQuery, Paginated } from 'nestjs-paginate';
 import { BaseAbstractRepository } from './base.abstract.repository';
-import { BaseEntity } from './base.entity';
 import { FindOptions } from './base.interface.repository';
+import { DeepPartial } from 'typeorm';
 
-export abstract class BaseService<T extends BaseEntity> {
+export abstract class BaseService<T> {
   constructor(private readonly baseRepository: BaseAbstractRepository<T>) {}
 
   public async create(data: T): Promise<T> {
-    return await this.baseRepository.save(data);
+    return await this.baseRepository.create(data);
   }
 
   public async save(data: T): Promise<T> {
@@ -19,12 +19,8 @@ export abstract class BaseService<T extends BaseEntity> {
   }
 
   public async findOne(options: FindOptions<T>): Promise<T> {
-    return await this.findOne(options);
+    return await this.baseRepository.findOne(options);
   }
-
-  // public async findAll(): Promise<T[]> {
-  //   return await this.baseRepository.findAll();
-  // }
 
   public async findAll(query: PaginateQuery): Promise<Paginated<T>> {
     return await this.baseRepository.findAll(query);
@@ -38,11 +34,7 @@ export abstract class BaseService<T extends BaseEntity> {
     await this.baseRepository.softDeleteById(id);
   }
 
-  public async update(id: number, data: Partial<T>): Promise<T> {
-    const obj = await this.findOneById(id);
-    return this.baseRepository.save({
-      ...obj,
-      ...data,
-    });
+  public async update(id: number, data: DeepPartial<T>): Promise<T> {
+    return await this.baseRepository.update(id, data);
   }
 }

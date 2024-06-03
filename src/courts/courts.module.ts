@@ -9,5 +9,6 @@ import { CourtsService } from './courts.service';
   imports: [TypeOrmModule.forFeature([Court])],
   controllers: [CourtsController],
   providers: [CourtsService, CourtsRepository],
+  exports: [CourtsService],
 })
 export class CourtsModule {}

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CourtsService } from './courts.service';
 import { CourtsRepository } from './courts.repository';
 import { PaginateQuery, Paginated } from 'nestjs-paginate';
 import { Court } from './entities/court.entity';
 import { CreateCourtDto, UpdateCourtDto } from './dto/court.dto';
+import { FindOptions } from 'src/base/base.interface.repository';
 
 const mockCreate = jest.fn();
 const mockSave = jest.fn();
@@ -64,8 +64,8 @@ const mockPaginatedResponse: Paginated<Court> = {
   },
 };
 
-describe('CourtsService', () => {
-  let service: CourtsService;
+describe('CourtsRepository', () => {
+  let repository: CourtsRepository;
   const mockCourtsRepository = {
     create: mockCreate,
     save: mockSave,
@@ -79,22 +79,22 @@ describe('CourtsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CourtsService, CourtsRepository],
+      providers: [CourtsRepository],
     })
       .overrideProvider(CourtsRepository)
       .useValue(mockCourtsRepository)
       .compile();
 
-    service = module.get<CourtsService>(CourtsService);
+    repository = module.get<CourtsRepository>(CourtsRepository);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(repository).toBeDefined();
   });
 
   it('should create a court', async () => {
     mockCreate.mockResolvedValue(mockCourt);
-    const response = await service.create(mockCreateCourtDto);
+    const response = await repository.create(mockCreateCourtDto);
     expect(response).toEqual(mockCourt);
   });
 
@@ -102,12 +102,12 @@ describe('CourtsService', () => {
     const error = new Error('Invalid number');
     mockCreate.mockRejectedValueOnce(error);
 
-    expect(service.create(mockCreateCourtDto)).rejects.toThrow(error);
+    expect(repository.create(mockCreateCourtDto)).rejects.toThrow(error);
   });
 
   it('should save a court', async () => {
     mockSave.mockResolvedValue(savedCourt);
-    const response = await service.save(mockCourt);
+    const response = await repository.save(mockCourt);
     expect(response).toEqual(savedCourt);
   });
 
@@ -115,13 +115,13 @@ describe('CourtsService', () => {
     const error = new Error('Court not saved');
     mockSave.mockRejectedValue(error);
 
-    expect(service.save(savedCourt)).rejects.toThrow(error);
+    expect(repository.save(savedCourt)).rejects.toThrow(error);
   });
 
   it('should find all the courts', async () => {
     mockFindAll.mockResolvedValue(mockPaginatedResponse);
 
-    const response = await service.findAll(mockPaginateQuery);
+    const response = await repository.findAll(mockPaginateQuery);
 
     expect(response).toEqual(mockPaginatedResponse);
   });
@@ -130,12 +130,12 @@ describe('CourtsService', () => {
     const error = new Error('Courts not found');
     mockFindAll.mockRejectedValue(error);
 
-    expect(service.findAll(mockPaginateQuery)).rejects.toThrow(error);
+    expect(repository.findAll(mockPaginateQuery)).rejects.toThrow(error);
   });
 
   it('should find one court by id', async () => {
     mockFindOneById.mockResolvedValue(mockCourt);
-    const response = await service.findOneById(mockCourtId);
+    const response = await repository.findOneById(mockCourtId);
     expect(response).toEqual(mockCourt);
   });
 
@@ -144,13 +144,30 @@ describe('CourtsService', () => {
 
     mockFindOneById.mockRejectedValue(error);
 
-    expect(service.findOneById(mockCourtId)).rejects.toThrow(error);
+    expect(repository.findOneById(mockCourtId)).rejects.toThrow(error);
+  });
+
+  it('should find one court', async () => {
+    mockFindOne.mockResolvedValue(mockCourt);
+    const options: FindOptions<typeof mockCourt> = { where: { number: 10 } };
+    const response = await repository.findOne(options);
+    expect(response).toEqual(mockCourt);
+  });
+
+  it('should return error on find one court', async () => {
+    const error = new Error('Court not found');
+
+    mockFindOne.mockRejectedValue(error);
+
+    const options: FindOptions<typeof mockCourt> = { where: { number: 10 } };
+
+    expect(repository.findOne(options)).rejects.toThrow(error);
   });
 
   it('should update a court', async () => {
     mockUpdate.mockResolvedValue(savedCourt);
 
-    const response = await service.update(mockCourtId, mockUpdateCourtDto);
+    const response = await repository.update(mockCourtId, savedCourt);
 
     expect(response).toEqual(savedCourt);
   });
@@ -161,14 +178,14 @@ describe('CourtsService', () => {
     mockUpdate.mockRejectedValue(error);
 
     await expect(
-      service.update(mockCourtId, mockUpdateCourtDto),
+      repository.update(mockCourtId, mockUpdateCourtDto),
     ).rejects.toThrow(error);
   });
 
   it('should delete a court', async () => {
     mockDeleteById.mockResolvedValue(undefined);
 
-    const response = await service.deleteById(mockCourtId);
+    const response = await repository.deleteById(mockCourtId);
 
     expect(response).toBeUndefined();
     expect(mockDeleteById).toHaveBeenCalledTimes(1);
@@ -178,13 +195,13 @@ describe('CourtsService', () => {
     const error = new Error('Court not found');
     mockDeleteById.mockRejectedValue(error);
 
-    expect(service.deleteById(mockCourtId)).rejects.toThrow(error);
+    expect(repository.deleteById(mockCourtId)).rejects.toThrow(error);
   });
 
   it('should soft delete a court', async () => {
     mockSoftDeleteById.mockResolvedValue(undefined);
 
-    const response = await service.softDeleteById(mockCourtId);
+    const response = await repository.softDeleteById(mockCourtId);
 
     expect(response).toBeUndefined();
     expect(mockSoftDeleteById).toHaveBeenCalledTimes(1);
@@ -194,25 +211,6 @@ describe('CourtsService', () => {
     const error = new Error('Court not found');
     mockSoftDeleteById.mockRejectedValue(error);
 
-    expect(service.softDeleteById(mockCourtId)).rejects.toThrow(error);
-  });
-
-  it('should find one court', async () => {
-    const options = { where: { number: 10 } } as any;
-    mockFindOne.mockResolvedValue(mockCourt);
-
-    const response = await service.findOne(options);
-
-    expect(response).toEqual(mockCourt);
-  });
-
-  it('should return error on find one court', async () => {
-    const error = new Error('Court not found');
-
-    mockFindOne.mockRejectedValue(error);
-
-    const options = { where: { number: 10 } } as any;
-
-    expect(service.findOne(options)).rejects.toThrow(error);
+    expect(repository.softDeleteById(mockCourtId)).rejects.toThrow(error);
   });
 });
