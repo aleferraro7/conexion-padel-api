@@ -4,7 +4,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { BaseService } from 'src/base/base.service';
 import { User } from '../repository/entities/user.entity';
 import { UsersRepository } from '../repository/users.repository';
-import { PinoLogger } from 'nestjs-pino';
+// import { PinoLogger } from 'nestjs-pino';
 import { PostgresErrorCode } from 'src/config/postgresErrorCodes.enum';
 import { RegisterDto } from 'src/common/dtos/register.dto';
 
@@ -12,10 +12,10 @@ import { RegisterDto } from 'src/common/dtos/register.dto';
 export class UsersService extends BaseService<User> {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly logger: PinoLogger,
+    // private readonly logger: PinoLogger,
   ) {
     super(usersRepository);
-    this.logger.setContext(UsersService.name);
+    // this.logger.setContext(UsersService.name);
   }
 
   async findByEmail(email: string) {

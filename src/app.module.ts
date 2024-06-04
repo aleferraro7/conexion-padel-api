@@ -10,13 +10,13 @@ import { UsersModule } from './users/users.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
 import { PlayersModule } from './players/players.module';
-import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from 'nestjs-pino';
 import {
   CORRELATION_ID_HEADER,
   CorrelationIdMiddleware,
 } from './correlation-id/correlation-id.middleware';
 import { Request } from 'express';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
