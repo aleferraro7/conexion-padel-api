@@ -4,6 +4,7 @@ import { User } from '../repository/entities/user.entity';
 import { UsersController } from './users.controller';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../services/users.service';
+// import { PinoLogger } from 'nestjs-pino';
 
 const mockUpdate = jest.fn();
 const mockFindOneById = jest.fn();
@@ -74,6 +75,7 @@ describe('UsersController', () => {
     })
       .overrideProvider(UsersService)
       .useValue(mockUserService)
+      // .setLogger(PinoLogger)
       .compile();
 
     controller = module.get<UsersController>(UsersController);

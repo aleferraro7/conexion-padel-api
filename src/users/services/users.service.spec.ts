@@ -8,23 +8,24 @@ const mockFindByEmail = jest.fn();
 const mockRegister = jest.fn();
 const mockFindOne = jest.fn();
 const mockSave = jest.fn();
+jest.mock('bcrypt');
 
 const mockUserId = 1;
 
 const mockUserEmail = 'johndoe@mail.com';
 
-const mockPassword =
+const mockHashedPassword =
   '$2b$10$TpWXVRbrR4BHFgCwf4.0dOkSZitpkOg3iFJOFUH8RI3CiHVlgrB.q';
 
 const mockUser = {
-  mockPassword,
+  mockHashedPassword,
   mockUserId,
   mockUserEmail,
 };
 
 const mockCreateUser: RegisterDto = {
   email: mockUserEmail,
-  password: mockPassword,
+  password: '123456',
 };
 
 describe('UsersService', () => {
@@ -51,30 +52,12 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 
-  // it('should find one user by email', async () => {
-  //   const options = { where: { email: mockUserEmail } };
-  //   mockFindOne.mockResolvedValue(mockUser);
-  //   const response = await service.findOne(options);
-
-  //   expect(response).toEqual(mockUser);
-  // });
-
   it('should find one user by email', async () => {
     mockFindOne.mockResolvedValue(mockUser);
     const response = await service.findByEmail(mockUserEmail);
 
     expect(response).toEqual(mockUser);
   });
-
-  // it('should return error on find an user by email', async () => {
-  //   const error = new HttpException(
-  //     'User with this email does not exists',
-  //     HttpStatus.NOT_FOUND,
-  //   );
-  //   mockFindOne.mockRejectedValue(error);
-
-  //   expect(service.findByEmail(mockUserEmail)).toThrow(error);
-  // });
 
   it('should throw an error if no user is found', async () => {
     mockFindOne.mockResolvedValue(null);
@@ -89,11 +72,39 @@ describe('UsersService', () => {
   });
 
   it('should register a new user', async () => {
-    mockSave.mockResolvedValue(mockUser);
+    const savedUser = {
+      ...mockCreateUser,
+      password: mockHashedPassword,
+    };
+    mockRegister.mockResolvedValue(savedUser);
+    mockSave.mockResolvedValue(savedUser);
+    const response = await service.register(mockCreateUser);
 
-    const response = await service.save(mockCreateUser);
-    // mockCreateUser.mockPassword = undefined;
+    expect(response).toEqual(savedUser);
+    expect(mockSave).toHaveBeenCalledWith(savedUser);
+  });
 
-    expect(response).toEqual(mockUser);
+  it('should return error if email already exists', async () => {
+    mockRegister.mockResolvedValue(mockCreateUser);
+
+    const error = { code: '23505' };
+    mockSave.mockRejectedValue(error);
+
+    await expect(service.register(mockCreateUser)).rejects.toThrow(
+      HttpException,
+    );
+    await expect(service.register(mockCreateUser)).rejects.toThrow(
+      'User with that email already exists',
+    );
+  });
+
+  it('should throw an internal server error', async () => {
+    mockSave.mockRejectedValue(new Error('Unexpected error'));
+    await expect(service.register(mockCreateUser)).rejects.toThrow(
+      new HttpException(
+        'Something went wrong',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      ),
+    );
   });
 });
