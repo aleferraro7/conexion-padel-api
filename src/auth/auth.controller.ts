@@ -9,25 +9,25 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Response } from 'express';
 import { Public } from 'src/common/public.decorator';
 import { User } from 'src/users/repository/entities/user.entity';
-import { PinoLogger } from 'nestjs-pino';
+// import { PinoLogger } from 'nestjs-pino';
 import { RegisterDto } from 'src/common/dtos/register.dto';
 import { LoginDto } from 'src/common/dtos/login.dto';
 import { UsersService } from 'src/users/services/users.service';
+import { AuthService } from './auth.service.';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
-    private readonly logger: PinoLogger,
+    // private readonly logger: PinoLogger,
   ) {
-    this.logger.setContext(AuthController.name);
+    // this.logger.setContext(AuthController.name);
   }
 
   @Public()
