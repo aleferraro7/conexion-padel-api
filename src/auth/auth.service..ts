@@ -2,7 +2,7 @@ import { Injectable, Res, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
-import { PinoLogger } from 'nestjs-pino';
+// import { PinoLogger } from 'nestjs-pino';
 import { LoginDto } from 'src/common/dtos/login.dto';
 
 @Injectable()
@@ -10,9 +10,9 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly logger: PinoLogger,
+    // private readonly logger: PinoLogger,
   ) {
-    this.logger.setContext(AuthService.name);
+    // this.logger.setContext(AuthService.name);
   }
 
   async login({
