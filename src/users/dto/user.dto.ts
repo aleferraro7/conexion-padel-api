@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { Profile } from 'src/profile/entities/profile.entity';
+// import { Profile } from 'src/profile/entities/profile.entity';
 
 export class UserDto {
   @ApiProperty({
@@ -21,20 +21,19 @@ export class UserDto {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({
-    description: 'Profile',
-    example: {
-      username: 'John23',
-      name: 'John',
-      lastname: 'Doe',
-      age: 25,
-      telephone_number: '666303030',
-      level: '4,00',
-      gender: 'MALE',
-    },
-    required: true,
-  })
-  profile: Profile;
+  // @ApiProperty({
+  //   description: 'Profile',
+  //   example: {
+  //     username: 'John23',
+  //     name: 'John',
+  //     lastname: 'Doe',
+  //     age: 25,
+  //     telephone_number: '666303030',
+  //     level: '4,00',
+  //   },
+  //   required: true,
+  // })
+  // profile: Profile;
 }
 
 export class CreateUserDto {
@@ -56,20 +55,19 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({
-    description: 'Profile',
-    example: {
-      username: 'John23',
-      name: 'John',
-      lastname: 'Doe',
-      age: 25,
-      telephone_number: '666303030',
-      level: '4,00',
-      gender: 'MALE',
-    },
-    required: true,
-  })
-  profile: Profile;
+  // @ApiProperty({
+  //   description: 'Profile',
+  //   example: {
+  //     username: 'John23',
+  //     name: 'John',
+  //     lastname: 'Doe',
+  //     age: 25,
+  //     telephone_number: '666303030',
+  //     level: '4,00',
+  //   },
+  //   required: true,
+  // })
+  // profile: Profile;
 }
 
 export class UpdateUserDto extends PartialType(UserDto) {}

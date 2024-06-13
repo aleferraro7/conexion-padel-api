@@ -15,7 +15,7 @@ export class User extends BaseEntity {
   password: string;
 
   @OneToOne(() => Profile, (profile: Profile) => profile.user)
-  profile: Profile;
+  profile?: Profile;
 
   // async validatePassword(password: string): Promise<boolean> {
   //   return bcrypt.compare(password, this.password);

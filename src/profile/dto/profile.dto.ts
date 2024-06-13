@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { Gender, Level, Position } from '../entities/profile.entity';
+import { Level, Position } from '../entities/profile.entity';
 import { User } from 'src/users/repository/entities/user.entity';
 
 export class ProfileDto {
@@ -44,13 +44,6 @@ export class ProfileDto {
     required: true,
   })
   level: Level;
-
-  @ApiProperty({
-    description: 'Gender',
-    example: 'MALE',
-    required: true,
-  })
-  gender: Gender;
 
   @ApiProperty({
     description: 'Position',
@@ -116,13 +109,6 @@ export class CreateProfileDto {
     required: true,
   })
   level: Level;
-
-  @ApiProperty({
-    description: 'Gender',
-    example: 'MALE',
-    required: true,
-  })
-  gender: Gender;
 
   @ApiProperty({
     description: 'Position',

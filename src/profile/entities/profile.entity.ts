@@ -3,13 +3,6 @@ import { BaseEntity } from 'src/base/base.entity';
 import { User } from 'src/users/repository/entities/user.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
-export enum Gender {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  NON_BINARY = 'NON BINNARY',
-  OTHER = 'OTHER',
-}
-
 export enum Position {
   DRIVE = 'DRIVE',
   REVES = 'REVES',
@@ -58,15 +51,12 @@ export class Profile extends BaseEntity {
   telephone_number: string;
 
   @Column()
-  level: Level;
-
-  @Column()
-  gender: Gender;
+  level?: Level;
 
   @Column()
   position: Position;
 
-  @OneToOne(() => User, {
+  @OneToOne(() => User, (user) => user.profile, {
     eager: true,
     cascade: true,
   })
@@ -86,7 +76,6 @@ export const PROFILE_PAGINATE_CONFIG: PaginateConfig<Profile> = {
     'age',
     'telephone_number',
     'level',
-    'gender',
     'position',
     'user',
   ],
@@ -103,7 +92,6 @@ export const PROFILE_PAGINATE_CONFIG: PaginateConfig<Profile> = {
     'age',
     'telephone_number',
     'level',
-    'gender',
     'position',
     'user',
   ],
