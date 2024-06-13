@@ -1,9 +1,10 @@
 import { PaginateQuery, Paginated } from 'nestjs-paginate';
-import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
+import { UpdateUserDto } from '../dto/user.dto';
 import { User } from '../repository/entities/user.entity';
 import { UsersController } from './users.controller';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../services/users.service';
+import { RegisterDto } from 'src/common/dtos/register.dto';
 // import { PinoLogger } from 'nestjs-pino';
 
 const mockUpdate = jest.fn();
@@ -13,7 +14,7 @@ const mockDeleteById = jest.fn();
 
 const mockUserId = 1;
 
-const mockCreateUserDto: CreateUserDto = {
+const mockCreateUserDto: RegisterDto = {
   email: 'johndoe@mail.com',
   password: '123456',
 };

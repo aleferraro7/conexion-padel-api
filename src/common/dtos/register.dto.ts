@@ -11,13 +11,6 @@ export class RegisterDto {
   @IsEmail()
   email: string;
 
-  // @ApiProperty({
-  //   description: 'User name',
-  //   example: 'John',
-  //   required: true,
-  // })
-  // name: string;
-
   @ApiProperty({
     description: 'user password',
     example: '123456',

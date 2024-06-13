@@ -9,7 +9,6 @@ import { CourtsModule } from './courts/courts.module';
 import { UsersModule } from './users/users.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptions-logger.filter';
-import { PlayersModule } from './players/players.module';
 import { LoggerModule } from 'nestjs-pino';
 import {
   CORRELATION_ID_HEADER,
@@ -17,6 +16,7 @@ import {
 } from './correlation-id/correlation-id.middleware';
 import { Request } from 'express';
 import { AuthModule } from './auth/auth.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -70,8 +70,8 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
     CourtsModule,
-    PlayersModule,
     AuthModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [
