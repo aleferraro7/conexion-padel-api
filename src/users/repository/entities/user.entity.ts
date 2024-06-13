@@ -2,19 +2,20 @@ import { Expose } from 'class-transformer';
 // import * as bcrypt from 'bcrypt';
 import { PaginateConfig } from 'nestjs-paginate';
 import { BaseEntity } from 'src/base/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Profile } from 'src/profile/entities/profile.entity';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
-  // @PrimaryGeneratedColumn()
-  // id?: number;
-
   @Column({ unique: true })
   @Expose()
   email: string;
 
   @Column()
   password: string;
+
+  @OneToOne(() => Profile, (profile: Profile) => profile.user)
+  profile: Profile;
 
   // async validatePassword(password: string): Promise<boolean> {
   //   return bcrypt.compare(password, this.password);
