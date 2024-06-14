@@ -4,12 +4,14 @@ import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
 // import { PinoLogger } from 'nestjs-pino';
 import { LoginDto } from 'src/common/dtos/login.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
     // private readonly logger: PinoLogger,
   ) {
     // this.logger.setContext(AuthService.name);
@@ -39,5 +41,15 @@ export class AuthService {
   async logOut(@Res({ passthrough: true }) res) {
     res.cookie('access_token', '', { expires: new Date(Date.now()) });
     return {};
+  }
+
+  async getUserFromAuthToken(token: string) {
+    const payload = this.jwtService.verify(token, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
+
+    if (payload.userId) {
+      return this.usersService.findOneById(payload.userId);
+    }
   }
 }
