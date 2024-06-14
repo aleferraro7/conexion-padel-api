@@ -42,14 +42,4 @@ export class AuthService {
     res.cookie('access_token', '', { expires: new Date(Date.now()) });
     return {};
   }
-
-  async getUserFromAuthToken(token: string) {
-    const payload = this.jwtService.verify(token, {
-      secret: this.configService.get('JWT_SECRET'),
-    });
-
-    if (payload.userId) {
-      return this.usersService.findOneById(payload.userId);
-    }
-  }
 }
