@@ -16,7 +16,6 @@ import {
 } from './correlation-id/correlation-id.middleware';
 import { Request } from 'express';
 import { AuthModule } from './auth/auth.module';
-import { ProfileModule } from './profile/profile.module';
 import { WebSocketModule } from './websockets/webSocket.module';
 
 @Module({
@@ -72,7 +71,6 @@ import { WebSocketModule } from './websockets/webSocket.module';
     }),
     CourtsModule,
     AuthModule,
-    ProfileModule,
     WebSocketModule,
   ],
   controllers: [AppController],

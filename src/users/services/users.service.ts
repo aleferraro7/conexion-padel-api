@@ -6,7 +6,7 @@ import { User } from '../repository/entities/user.entity';
 import { UsersRepository } from '../repository/users.repository';
 // import { PinoLogger } from 'nestjs-pino';
 import { PostgresErrorCode } from 'src/config/postgresErrorCodes.enum';
-import { RegisterDto } from 'src/common/dtos/register.dto';
+import { CreateUserDto } from '../dto/user.dto';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
@@ -33,7 +33,7 @@ export class UsersService extends BaseService<User> {
     );
   }
 
-  async register(registerData: RegisterDto): Promise<User> {
+  async register(registerData: CreateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(registerData.password, 10);
     try {
       const createdUser = await this.usersRepository.save({

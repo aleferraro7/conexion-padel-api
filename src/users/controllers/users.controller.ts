@@ -5,11 +5,12 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   // Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../services/users.service';
-import { UpdateUserDto } from '../dto/user.dto';
+import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
 // import { PinoLogger } from 'nestjs-pino';
 import { USER_PAGINATE_CONFIG, User } from '../repository/entities/user.entity';
 import {
@@ -27,6 +28,10 @@ export class UsersController {
     // private readonly logger: PinoLogger,
   ) {
     // this.logger.setContext(UsersController.name);
+  }
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this._usersService.register(createUserDto);
   }
 
   @Get()
