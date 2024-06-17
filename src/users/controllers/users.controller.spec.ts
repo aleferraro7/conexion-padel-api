@@ -1,22 +1,27 @@
 import { PaginateQuery, Paginated } from 'nestjs-paginate';
-import { UpdateUserDto } from '../dto/user.dto';
+import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
 import { User } from '../repository/entities/user.entity';
 import { UsersController } from './users.controller';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../services/users.service';
-import { RegisterDto } from 'src/common/dtos/register.dto';
 // import { PinoLogger } from 'nestjs-pino';
 
 const mockUpdate = jest.fn();
 const mockFindOneById = jest.fn();
 const mockFindAll = jest.fn();
 const mockDeleteById = jest.fn();
+const mockRegister = jest.fn();
 
 const mockUserId = 1;
 
-const mockCreateUserDto: RegisterDto = {
+const mockCreateUserDto: CreateUserDto = {
   email: 'johndoe@mail.com',
   password: '123456',
+  username: 'john23',
+  name: 'john',
+  lastname: 'doe',
+  age: 25,
+  telephone_number: '666112233',
 };
 
 const mockUser = {
@@ -67,6 +72,7 @@ describe('UsersController', () => {
     findOneById: mockFindOneById,
     findAll: mockFindAll,
     deleteById: mockDeleteById,
+    register: mockRegister,
   };
 
   beforeEach(async () => {
@@ -84,6 +90,20 @@ describe('UsersController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should register an user', async () => {
+    mockRegister.mockResolvedValue(mockUser);
+    const response = await controller.create(mockCreateUserDto);
+
+    expect(response).toEqual(mockUser);
+  });
+
+  it('should return error on register an user', async () => {
+    const error = new Error('Invalid data');
+    mockRegister.mockRejectedValue(error);
+
+    expect(controller.create(mockCreateUserDto)).rejects.toThrow(error);
   });
 
   it('should find all the users', async () => {
