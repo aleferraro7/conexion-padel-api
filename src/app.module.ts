@@ -16,7 +16,6 @@ import {
 } from './correlation-id/correlation-id.middleware';
 import { Request } from 'express';
 import { AuthModule } from './auth/auth.module';
-import { ProfileModule } from './profile/profile.module';
 import { WebSocketModule } from './websockets/webSocket.module';
 import { RoomsModule } from './rooms/rooms.module';
 
@@ -73,7 +72,6 @@ import { RoomsModule } from './rooms/rooms.module';
     }),
     CourtsModule,
     AuthModule,
-    ProfileModule,
     WebSocketModule,
     RoomsModule,
   ],

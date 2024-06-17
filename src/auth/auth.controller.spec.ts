@@ -13,6 +13,11 @@ const mockLogout = jest.fn();
 const mockCreateUserDto: CreateUserDto = {
   email: 'johndoe@mail.com',
   password: '123456',
+  username: 'john23',
+  name: 'john',
+  lastname: 'doe',
+  age: 25,
+  telephone_number: '666112233',
 };
 
 const mockUserId = 1;

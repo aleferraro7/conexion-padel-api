@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { UsersRepository } from '../repository/users.repository';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { RegisterDto } from 'src/common/dtos/register.dto';
+import { CreateUserDto } from '../dto/user.dto';
 
 const mockFindByEmail = jest.fn();
 const mockRegister = jest.fn();
@@ -23,9 +23,14 @@ const mockUser = {
   mockUserEmail,
 };
 
-const mockCreateUser: RegisterDto = {
-  email: mockUserEmail,
+const mockCreateUser: CreateUserDto = {
+  email: 'johndoe@mail.com',
   password: '123456',
+  username: 'john23',
+  name: 'john',
+  lastname: 'doe',
+  age: 25,
+  telephone_number: '666112233',
 };
 
 describe('UsersService', () => {
@@ -63,7 +68,7 @@ describe('UsersService', () => {
     mockFindOne.mockResolvedValue(null);
 
     try {
-      await service.findByEmail('nonexistent@example.com');
+      await service.findByEmail('notexist@mail.com');
     } catch (error) {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.message).toBe('User with this email does not exists');

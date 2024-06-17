@@ -15,10 +15,10 @@ import { Response } from 'express';
 import { Public } from 'src/common/public.decorator';
 import { User } from 'src/users/repository/entities/user.entity';
 // import { PinoLogger } from 'nestjs-pino';
-import { RegisterDto } from 'src/common/dtos/register.dto';
 import { LoginDto } from 'src/common/dtos/login.dto';
 import { UsersService } from 'src/users/services/users.service';
 import { AuthService } from './auth.service.';
+import { CreateUserDto } from 'src/users/dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -32,8 +32,8 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  async register(@Body() registerDto: RegisterDto): Promise<User> {
-    return await this.usersService.register(registerDto);
+  async register(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return await this.usersService.register(createUserDto);
   }
 
   @Public()

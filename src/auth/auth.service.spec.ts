@@ -6,7 +6,6 @@ import { LoginDto } from 'src/common/dtos/login.dto';
 import { UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
-const mockLogin = jest.fn();
 const mockLogout = jest.fn();
 const mockFindByEmail = jest.fn();
 const mockSignAsync = jest.fn();
@@ -38,11 +37,6 @@ describe('AuthService', () => {
   let authService: AuthService;
   let usersService: UsersService;
   let jwtService: JwtService;
-
-  const mockAuthService = {
-    login: mockLogin,
-    logout: mockLogout,
-  };
 
   const mockUsersService = {
     findByEmail: mockFindByEmail,
