@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -26,17 +25,22 @@ export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
   @Post()
-  async create(id: number, @Body() createRoomDto: CreateRoomDto) {
-    return this.roomsService.createRoom(id, createRoomDto);
+  async create(@Body() createRoomDto: CreateRoomDto) {
+    return this.roomsService.create(createRoomDto);
   }
 
-  @Post('join/:roomId')
-  async joinRoom(
-    @Param('roomId', ParseIntPipe) roomId: number,
-    @Body('userId', ParseIntPipe) userId: number,
-  ) {
-    return this.roomsService.joinRoom(userId, roomId);
-  }
+  // @Post()
+  // async createWithLeader(
+  //   @Body() createRoomDto: CreateRoomDto,
+  //   // @Req() req: RequestWithUser,
+  // ) {
+  //   return this.roomsService.createRoom(createRoomDto, req.user);
+  // }
+
+  // @Post('join/:roomId')
+  // async joinRoom(@Param('roomId', ParseIntPipe) roomId: number, @Req() req) {
+  //   return this.roomsService.joinRoom(roomId, req.user);
+  // }
 
   @Get()
   @ApiOkPaginatedResponse(Room, ROOM_PAGINATE_CONFIG)

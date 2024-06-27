@@ -2,44 +2,34 @@ import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/base/base.service';
 import { Room } from './entities/room.entity';
 import { RoomsRepository } from './rooms.repository';
-import { UsersRepository } from 'src/users/repository/users.repository';
-import { CreateRoomDto } from './dto/room.dto';
 
 @Injectable()
 export class RoomsService extends BaseService<Room> {
-  constructor(
-    private readonly roomsRepository: RoomsRepository,
-    private readonly usersRepository: UsersRepository,
-  ) {
+  constructor(private readonly roomsRepository: RoomsRepository) {
     super(roomsRepository);
   }
 
-  async createRoom(userId: number, data: CreateRoomDto): Promise<Room> {
-    const user = await this.usersRepository.findOneById(userId);
-    if (!user) {
-      throw new Error('User not found');
-    }
+  // async joinRoom(userId: number, roomId: number): Promise<Room> {
+  //   const room = await this.roomsRepository.findOneById(roomId);
+  //   const userAdd = await this.usersRepository.findOneById(user);
 
-    const createdRoom = await this.roomsRepository.create(data);
+  //   if (!room) {
+  //     throw new Error('Room not found');
+  //   }
 
-    return await this.roomsRepository.save(createdRoom);
-  }
+  //   if (!userAdd) {
+  //     throw new Error('Aca falla');
+  //   }
 
-  async joinRoom(userId: number, roomId: number): Promise<Room> {
-    const room = await this.roomsRepository.findOneById(roomId);
-    const user = await this.usersRepository.findOneById(userId);
+  //   // if (room.users.length >= 4) {
+  //   //   throw new Error('Room is full');
+  //   // }
 
-    if (!room) {
-      throw new Error('Room not found');
-    }
-    if (!user) {
-      throw new Error('User not found');
-    }
-    if (room.users.length >= 4) {
-      throw new Error('Room is full');
-    }
+  //   const joinedRoom = await this.roomsRepository.save({
+  //     ...room,
+  //     users: [userAdd],
+  //   });
 
-    room.users.push(user);
-    return this.roomsRepository.save(room);
-  }
+  //   return joinedRoom;
+  // }
 }

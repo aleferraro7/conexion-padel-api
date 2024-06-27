@@ -7,7 +7,6 @@ import {
   MinLength,
 } from 'class-validator';
 import { Level, Position } from '../repository/entities/user.entity';
-// import { Profile } from 'src/profile/entities/profile.entity';
 
 export class UserDto {
   @ApiProperty({
@@ -35,7 +34,7 @@ export class UserDto {
     required: true,
   })
   @IsString()
-  username: string;
+  username?: string;
 
   @ApiProperty({
     description: 'Name',
@@ -43,7 +42,7 @@ export class UserDto {
     required: true,
   })
   @IsString()
-  name: string;
+  name?: string;
 
   @ApiProperty({
     description: 'Lastname',
@@ -51,7 +50,7 @@ export class UserDto {
     required: true,
   })
   @IsString()
-  lastname: string;
+  lastname?: string;
 
   @ApiProperty({
     description: 'Age',
@@ -59,7 +58,7 @@ export class UserDto {
     required: true,
   })
   @IsNumber()
-  age: number;
+  age?: number;
 
   @ApiProperty({
     description: 'Telephone number',
@@ -67,7 +66,7 @@ export class UserDto {
     required: true,
   })
   @IsString()
-  telephone_number: string;
+  telephone_number?: string;
 
   @ApiProperty({
     description: 'Level',
@@ -110,7 +109,7 @@ export class CreateUserDto {
     required: true,
   })
   @IsString()
-  username: string;
+  username?: string;
 
   @ApiProperty({
     description: 'Name',
@@ -118,7 +117,7 @@ export class CreateUserDto {
     required: true,
   })
   @IsString()
-  name: string;
+  name?: string;
 
   @ApiProperty({
     description: 'Lastname',
@@ -126,7 +125,7 @@ export class CreateUserDto {
     required: true,
   })
   @IsString()
-  lastname: string;
+  lastname?: string;
 
   @ApiProperty({
     description: 'Age',
@@ -134,7 +133,7 @@ export class CreateUserDto {
     required: true,
   })
   @IsNumber()
-  age: number;
+  age?: number;
 
   @ApiProperty({
     description: 'Telephone number',
@@ -142,7 +141,7 @@ export class CreateUserDto {
     required: true,
   })
   @IsString()
-  telephone_number: string;
+  telephone_number?: string;
 
   @ApiProperty({
     description: 'Level',

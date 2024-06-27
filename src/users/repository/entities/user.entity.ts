@@ -44,19 +44,19 @@ export class User extends BaseEntity {
   password: string;
 
   @Column()
-  username: string;
+  username?: string;
 
   @Column()
-  name: string;
+  name?: string;
 
   @Column()
-  lastname: string;
+  lastname?: string;
 
   @Column()
-  age: number;
+  age?: number;
 
-  @Column()
-  telephone_number: string;
+  @Column({ nullable: true })
+  telephone_number?: string;
 
   @Column()
   level?: Level;
@@ -67,11 +67,11 @@ export class User extends BaseEntity {
   // async validatePassword(password: string): Promise<boolean> {
   //   return bcrypt.compare(password, this.password);
   // }
-
-  USER_PAGINATE_CONFIG: PaginateConfig<User> = {
-    sortableColumns: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
-    nullSort: 'last',
-    defaultSortBy: [['id', 'DESC']],
-    searchableColumns: ['id', 'createdAt', 'updatedAt', 'deletedAt', 'email'],
-  };
 }
+
+export const USER_PAGINATE_CONFIG: PaginateConfig<User> = {
+  sortableColumns: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
+  nullSort: 'last',
+  defaultSortBy: [['id', 'DESC']],
+  searchableColumns: ['id', 'createdAt', 'updatedAt', 'deletedAt', 'email'],
+};
