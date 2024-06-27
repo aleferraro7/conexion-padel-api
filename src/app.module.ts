@@ -17,6 +17,7 @@ import {
 import { Request } from 'express';
 import { AuthModule } from './auth/auth.module';
 import { WebSocketModule } from './websockets/webSocket.module';
+import { RoomsModule } from './rooms/rooms.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { WebSocketModule } from './websockets/webSocket.module';
     CourtsModule,
     AuthModule,
     WebSocketModule,
+    RoomsModule,
   ],
   controllers: [AppController],
   providers: [
